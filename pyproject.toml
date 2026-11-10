@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kinetic-mujoco"
+version = "0.1.0"
+description = "MuJoCo 4 physics simulation of a counter-rotating kinetic art sculpture with Mandala rotors"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT (code) / CC-BY-4.0 (Mandala artwork)" }
+authors = [
+    { name = "Igor Zubrycki" },
+    { name = "Honorata Łukasik" },
+]
+dependencies = [
+    "mujoco>=4.0.0",
+    "numpy>=2.0.0",
+    "matplotlib>=3.8.0",
+    "imageio>=2.34.0",
+    "imageio-ffmpeg>=0.5.0",
+]
+
+[project.scripts]
+build-mandalka = "build_mandalka_model:main"
+simulate-mandalka = "simulate_mandalka:main"
+build-motor = "build_model_xml:main"
+simulate-motor = "simulate_motor:main"
+
+[tool.setuptools]
+package-dir = {"" = "scripts"}
+py-modules = [
+    "build_mandalka_model",
+    "simulate_mandalka",
+    "build_model_xml",
+    "simulate_motor",
+]

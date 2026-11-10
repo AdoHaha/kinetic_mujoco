@@ -1,0 +1,140 @@
+<mujoco model="theisolab_mandalka_kinetic">
+  <compiler angle="degree" coordinate="local" inertiafromgeom="true"/>
+  <option timestep="0.001" gravity="0 0 -9.81" integrator="implicitfast" cone="elliptic" impratio="10"/>
+
+  <visual>
+    <global offwidth="1920" offheight="1080" azimuth="-60" elevation="-12"/>
+    <headlight ambient="0.38 0.38 0.38" diffuse="0.62 0.62 0.62" specular="0.18 0.18 0.18"/>
+    <rgba haze="0.10 0.12 0.16 1"/>
+  </visual>
+
+  <asset>
+    <texture name="grid" type="2d" builtin="checker" width="512" height="512" rgb1="0.12 0.14 0.18" rgb2="0.16 0.19 0.24"/>
+    <material name="mat_floor" texture="grid" texrepeat="6 6" reflectance="0.06"/>
+    <material name="mat_wall_wood" rgba="0.62 0.38 0.24 1.0" specular="0.15" shininess="0.2"/>
+    <material name="mat_spool_wood" rgba="0.82 0.60 0.36 1.0" specular="0.2" shininess="0.25"/>
+    <material name="mat_dente_wood" rgba="0.70 0.42 0.22 1.0" specular="0.2" shininess="0.25"/>
+    <material name="mat_mandalka_back" rgba="0.66 0.38 0.20 1.0" specular="0.12" shininess="0.2"/>
+    <material name="mat_mandalka_front" rgba="0.88 0.66 0.40 1.0" specular="0.12" shininess="0.2"/>
+    <material name="mat_hub_wood" rgba="0.72 0.45 0.26 1.0" specular="0.25" shininess="0.3"/>
+    <material name="mat_steel" rgba="0.78 0.80 0.85 1.0" specular="0.85" shininess="0.85"/>
+    <material name="mat_bearing" rgba="0.58 0.63 0.70 1.0" specular="0.9" shininess="0.9"/>
+    <material name="mat_cord_coil" rgba="0.32 0.36 0.42 1.0" specular="0.6" shininess="0.6"/>
+
+    <!-- Siatki 3D wyekstrahowane bezpośrednio z wektorowych plików PDF: -->
+    <!-- Mandalka_mala2a.pdf (przednie skrzydła: Rotore 2 / C) -->
+    <!-- Mandalka_mala2b.pdf (tylne skrzydła: Rotore 1 / B) -->
+    <mesh name="mesh_mandalka_2a" file="meshes/mandalka_2a.stl"/>
+    <mesh name="mesh_mandalka_2b" file="meshes/mandalka_2b.stl"/>
+  </asset>
+
+  <default>
+    <geom solref="0.003 1.0" solimp="0.95 0.99 0.001" friction="0.08 0.002 0.0001"/>
+    <joint damping="0.0005" armature="0.0002"/>
+  </default>
+
+  <worldbody>
+    <light pos="0.3 0.6 0.7" dir="-0.2 -0.6 -0.5" directional="true" castshadow="true"/>
+    <light pos="-0.4 0.5 0.5" dir="0.3 -0.5 -0.4" directional="false" diffuse="0.5 0.5 0.5"/>
+    <geom name="floor" type="plane" pos="0 0 -0.28" size="0.8 0.8 0.01" material="mat_floor" contype="0" conaffinity="0"/>
+
+    <!-- ========================================================================= -->
+    <!-- SEKCJA (A): R00 - Supporto a parete + C01 - Vite filettata (M8) + P01     -->
+    <!-- ========================================================================= -->
+    <body name="R00_supporto_parete" pos="0 0 0">
+      <geom name="R00_disc" type="cylinder" pos="0 0 0" euler="90 0 0" size="0.082 0.008" material="mat_wall_wood" contype="0" conaffinity="0"/>
+      <geom name="C02_head" type="cylinder" pos="0 -0.0085 0" euler="90 0 0" size="0.011 0.0015" material="mat_steel" contype="0" conaffinity="0"/>
+      <geom name="C01_shaft_M8" type="cylinder" pos="0 0.080 0" euler="90 0 0" size="0.004 0.086" material="mat_steel" contype="0" conaffinity="0"/>
+      <geom name="C03_rondella" type="cylinder" pos="0 0.0095 0" euler="90 0 0" size="0.010 0.0015" material="mat_steel" contype="0" conaffinity="0"/>
+      <geom name="A05_dado_M8" type="cylinder" pos="0 0.0145 0" euler="90 0 0" size="0.0075 0.0035" material="mat_steel" contype="0" conaffinity="0"/>
+      <geom name="C05_dado_M8" type="cylinder" pos="0 0.158 0" euler="90 0 0" size="0.0075 0.004" material="mat_steel" contype="0" conaffinity="0"/>
+
+      <geom name="washer_1" type="cylinder" pos="0 0.0195 0" euler="90 0 0" size="0.007 0.001" material="mat_steel" contype="0" conaffinity="0"/>
+      <geom name="washer_2" type="cylinder" pos="0 0.064 0" euler="90 0 0" size="0.007 0.001" material="mat_steel" contype="0" conaffinity="0"/>
+      <geom name="washer_3" type="cylinder" pos="0 0.104 0" euler="90 0 0" size="0.007 0.001" material="mat_steel" contype="0" conaffinity="0"/>
+      <geom name="C04_washer_4" type="cylinder" pos="0 0.120 0" euler="90 0 0" size="0.007 0.001" material="mat_steel" contype="0" conaffinity="0"/>
+      <geom name="C04_washer_5" type="cylinder" pos="0 0.152 0" euler="90 0 0" size="0.007 0.001" material="mat_steel" contype="0" conaffinity="0"/>
+      <geom name="N03_spacer" type="cylinder" pos="0 0.112 0" euler="90 0 0" size="0.009 0.007" material="mat_hub_wood" contype="0" conaffinity="0"/>
+
+      <!-- P01 - Perno metallico (D2 6mm L 60mm) na promieniu r = 49 mm (wewnętrzny obwód, bez kolizji z P02) -->
+      <geom name="P01_perno_stop" type="cylinder" pos="0 0.025 0.049" euler="90 0 0" size="0.003 0.025" material="mat_steel" contype="0" conaffinity="0"/>
+      <geom name="A03_pawl_upper_on_P01" type="box" pos="0 0.046 0.045" size="0.005 0.004 0.008" material="mat_dente_wood" contype="0" conaffinity="0"/>
+    </body>
+
+    <!-- ========================================================================= -->
+    <!-- ZESPÓŁ BĘBNA NAWIJAJĄCEGO I KOŁA ZĘBATEGO: A01-1, A02, A01-2, A03, N01    -->
+    <!-- ========================================================================= -->
+    <body name="A02_spool_assembly" pos="0 0 0">
+      <joint name="joint_spool" type="hinge" axis="0 1 0" damping="0.015"/>
+
+      <geom name="C06_bearing_spool_L" type="cylinder" pos="0 0.0245 0" euler="90 0 0" size="0.011 0.0035" material="mat_bearing" contype="0" conaffinity="0"/>
+      <geom name="C06_bearing_spool_R" type="cylinder" pos="0 0.0595 0" euler="90 0 0" size="0.011 0.0035" material="mat_bearing" contype="0" conaffinity="0"/>
+      <geom name="N01_spool_R" type="cylinder" pos="0 0.0595 0" euler="90 0 0" size="0.018 0.004" material="mat_hub_wood" contype="0" conaffinity="0"/>
+
+      <geom name="A01_1_flange_L" type="cylinder" pos="0 0.0245 0" euler="90 0 0" size="0.048 0.003" mass="0.025" material="mat_spool_wood" contype="0" conaffinity="0"/>
+      <geom name="A02_spool_core" type="cylinder" pos="0 0.0365 0" euler="90 0 0" size="0.035 0.009" mass="0.040" material="mat_spool_wood" contype="0" conaffinity="0"/>
+      <geom name="A02_wound_coil" type="cylinder" pos="0 0.0365 0" euler="90 0 0" size="0.038 0.007" mass="0.010" material="mat_cord_coil" contype="0" conaffinity="0"/>
+      <geom name="A01_2_flange_R" type="cylinder" pos="0 0.0480 0" euler="90 0 0" size="0.048 0.0025" mass="0.020" material="mat_spool_wood" contype="0" conaffinity="0"/>
+
+      <!-- A03 - Dente (tarcza i ząb zabierakowy na y = 0.0535 m) -->
+      <geom name="A03_disc" type="cylinder" pos="0 0.0535 0" euler="90 0 0" size="0.034 0.003" mass="0.020" material="mat_dente_wood" contype="0" conaffinity="0"/>
+      <geom name="A03_dente_bottom" type="box" pos="0 0.0535 -0.050" size="0.005 0.0035 0.015" mass="0.008" material="mat_dente_wood" contype="1" conaffinity="1"/>
+    </body>
+
+    <!-- ========================================================================= -->
+    <!-- SEKCJA (B): R01 - Rotore 1 (TYLNE SKRZYDŁA: Mandalka_mala2b.pdf)          -->
+    <!-- ========================================================================= -->
+    <body name="R01_rotore_1" pos="0 0 0">
+      <joint name="joint_rotore1" type="hinge" axis="0 1 0" damping="0.004"/>
+
+      <geom name="C06_bearing_R1_L" type="cylinder" pos="0 0.070 0" euler="90 0 0" size="0.011 0.0035" material="mat_bearing" contype="0" conaffinity="0"/>
+      <geom name="N01_R1_L" type="cylinder" pos="0 0.070 0" euler="90 0 0" size="0.024 0.005" material="mat_hub_wood" contype="0" conaffinity="0"/>
+      <geom name="C06_bearing_R1_R" type="cylinder" pos="0 0.097 0" euler="90 0 0" size="0.011 0.0035" material="mat_bearing" contype="0" conaffinity="0"/>
+      <geom name="N01_R1_R" type="cylinder" pos="0 0.097 0" euler="90 0 0" size="0.024 0.005" material="mat_hub_wood" contype="0" conaffinity="0"/>
+
+      <geom name="P02_pin_1" type="capsule" pos="0.020 0.095 0" euler="90 0 0" size="0.0022 0.020" material="mat_steel" contype="2" conaffinity="2"/>
+      <geom name="P02_pin_2" type="capsule" pos="-0.020 0.095 0" euler="90 0 0" size="0.0022 0.020" material="mat_steel" contype="2" conaffinity="2"/>
+      <geom name="P02_pin_3" type="capsule" pos="0 0.095 0.020" euler="90 0 0" size="0.0022 0.020" material="mat_steel" contype="0" conaffinity="0"/>
+      <geom name="P02_pin_4" type="capsule" pos="0 0.095 -0.020" euler="90 0 0" size="0.0022 0.020" material="mat_steel" contype="0" conaffinity="0"/>
+
+      <!-- P02 - Perno metallico su rotore 1 (na promieniu r = 62 mm, mija P01 bez kolizji!) -->
+      <geom name="P02_su_rotore1" type="capsule" pos="-0.009 0.068 -0.062" euler="90 0 0" size="0.003 0.015" material="mat_steel" contype="1" conaffinity="1"/>
+
+      <!-- Tylna tarcza skrzydłowa wygenerowana z Mandalka_mala2b.pdf (na y = 0.0835 m) -->
+      <geom name="R01_mandalka_2b" type="mesh" mesh="mesh_mandalka_2b" pos="0 0.0835 0" mass="0.140" material="mat_mandalka_back" contype="0" conaffinity="0"/>
+    </body>
+
+    <!-- ========================================================================= -->
+    <!-- SEKCJA (C): R02 - Rotore 2 (PRZEDNIE SKRZYDŁA: Mandalka_mala2a.pdf)       -->
+    <!-- ========================================================================= -->
+    <body name="R02_rotore_2" pos="0 0 0">
+      <joint name="joint_rotore2" type="hinge" axis="0 1 0" damping="0.0010"/>
+
+      <geom name="C06_bearing_R2_L" type="cylinder" pos="0 0.126 0" euler="90 0 0" size="0.011 0.0035" material="mat_bearing" contype="0" conaffinity="0"/>
+      <geom name="C06_bearing_R2_R" type="cylinder" pos="0 0.147 0" euler="90 0 0" size="0.011 0.0035" material="mat_bearing" contype="0" conaffinity="0"/>
+      <geom name="N01_R2_R" type="cylinder" pos="0 0.140 0" euler="90 0 0" size="0.025 0.007" material="mat_hub_wood" contype="0" conaffinity="0"/>
+      <geom name="N01_R2_cap" type="cylinder" pos="0 0.151 0" euler="90 0 0" size="0.017 0.005" material="mat_wall_wood" contype="0" conaffinity="0"/>
+
+      <!-- Przednia tarcza skrzydłowa wygenerowana z Mandalka_mala2a.pdf (na y = 0.128 m) -->
+      <geom name="R02_mandalka_2a" type="mesh" mesh="mesh_mandalka_2a" pos="0 0.1280 0" mass="0.140" material="mat_mandalka_front" contype="0" conaffinity="0"/>
+
+      <!-- Dyskretny ciężarek wyważający (contrappeso) po wewnętrznej stronie R02 -->
+      <geom name="R02_contrappeso" type="cylinder" pos="0 0.123 -0.052" euler="90 0 0" size="0.010 0.003" mass="0.052" material="mat_steel" contype="0" conaffinity="0"/>
+
+      <!-- C04 - Rondella pod zapadką N02/A04 -->
+      <geom name="C04_nottolino_washer" type="cylinder" pos="0 0.121 0.034" euler="90 0 0" size="0.004 0.001" material="mat_steel" contype="0" conaffinity="0"/>
+
+      <!-- N02 / A04 - Nottolino (uchylna zapadka na śrubie z trzpieniami P03) -->
+      <body name="N02_nottolino_pawl" pos="0 0.115 0.034">
+        <joint name="joint_nottolino_N02" type="hinge" axis="0 1 0" springref="0" stiffness="0.055" damping="0.0008" limited="true" range="-65 35"/>
+        <geom name="N02_body" type="box" pos="0 0 -0.006" size="0.006 0.004 0.010" mass="0.005" material="mat_spool_wood" contype="0" conaffinity="0"/>
+        <geom name="P03_pin_catch" type="capsule" pos="0 -0.004 -0.0145" euler="90 0 0" size="0.0020 0.0135" mass="0.002" material="mat_steel" contype="2" conaffinity="2"/>
+        <geom name="P03_pin_guide" type="capsule" pos="0 -0.004 -0.010" euler="90 0 0" size="0.0012 0.0135" mass="0.001" material="mat_steel" contype="0" conaffinity="0"/>
+      </body>
+    </body>
+  </worldbody>
+
+  <actuator>
+    <motor name="spring_drive_A02" joint="joint_spool" gear="1" ctrlrange="0 0.1" ctrllimited="true"/>
+  </actuator>
+</mujoco>

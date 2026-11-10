@@ -1,0 +1,22 @@
+# Virtual environments & caches
+.venv/
+.cache/
+.temp/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+scripts/*.egg-info/
+build/
+dist/
+
+# Large archives & rendered videos (linked via YouTube in README)
+*.7z
+*.mp4
+
+# Ignore local working notes, agent config & third-party reference images
+AGENTS.md
+notes/
+documents/*
+!documents/Mandalka_mala2a.pdf
+!documents/Mandalka_mala2b.pdf
