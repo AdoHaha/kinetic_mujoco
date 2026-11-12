@@ -118,6 +118,10 @@ pip install -e .
 
 ## Usage
 
+### MuJoCo Live (browser)
+
+Open the [Mandala model in MuJoCo Live](https://live.mujoco.org/?model=github:AdoHaha/kinetic_mujoco/main/scripts/theisolab_mandalka.xml). The XML now supplies the nominal `0.055 N·m` spool torque at the viewer's default control value of zero. In the Actuator panel, `spring_drive_A02` adds an offset to this torque: `-0.055` stops the drive and `0.045` raises it to `0.1 N·m`. Reset restores the nominal drive.
+
 ### 1. Interactive 3D MuJoCo Viewer (Mandala Sculpture)
 
 ```bash

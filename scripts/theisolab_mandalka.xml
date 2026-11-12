@@ -135,6 +135,10 @@
   </worldbody>
 
   <actuator>
-    <motor name="spring_drive_A02" joint="joint_spool" gear="1" ctrlrange="0 0.1" ctrllimited="true"/>
+    <!-- Constant spool torque is part of the model so standalone viewers work at ctrl=0. -->
+    <!-- The control slider adds an offset: -0.055 stops the drive, 0 is nominal. -->
+    <general name="spring_drive_A02" joint="joint_spool" gear="1"
+             gaintype="fixed" gainprm="1" biastype="affine" biasprm="0.055 0 0"
+             ctrlrange="-0.055 0.045" ctrllimited="true"/>
   </actuator>
 </mujoco>

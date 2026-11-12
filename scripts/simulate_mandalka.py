@@ -17,8 +17,6 @@ VIDEO_CLEAN_16X9_PATH = SCRIPT_DIR / "mandalka_clean_16x9.mp4"
 PLOT_PATH = SCRIPT_DIR / "mandalka_kinematics.png"
 PREVIEW_FRAME_PATH = SCRIPT_DIR / "mandalka_preview.png"
 
-DRIVE_TORQUE = 0.055
-
 
 def run_headless_recording(duration: float = 12.0, fps: int = 60) -> None:
     print(f"[MuJoCo {mujoco.__version__}] Wczytywanie modelu Mandalka: {MODEL_PATH}")
@@ -26,7 +24,6 @@ def run_headless_recording(duration: float = 12.0, fps: int = 60) -> None:
     data = mujoco.MjData(model)
 
     mujoco.mj_resetData(model, data)
-    data.ctrl[0] = DRIVE_TORQUE
     mujoco.mj_forward(model, data)
 
     jid_spool = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_JOINT, "joint_spool")
@@ -87,7 +84,6 @@ def run_headless_recording(duration: float = 12.0, fps: int = 60) -> None:
     writer_clean = imageio.get_writer(str(VIDEO_CLEAN_16X9_PATH), fps=fps, codec="libx264", quality=8, macro_block_size=16)
 
     for step in range(total_steps):
-        data.ctrl[0] = DRIVE_TORQUE
         mujoco.mj_step(model, data)
 
         if step % 10 == 0:
@@ -166,7 +162,6 @@ def run_interactive_viewer() -> None:
     model = mujoco.MjModel.from_xml_path(str(MODEL_PATH))
     data = mujoco.MjData(model)
     mujoco.mj_resetData(model, data)
-    data.ctrl[0] = DRIVE_TORQUE
     mujoco.mj_forward(model, data)
 
     with mujoco.viewer.launch_passive(model, data) as viewer:
@@ -177,7 +172,6 @@ def run_interactive_viewer() -> None:
 
         while viewer.is_running():
             step_start = time.perf_counter()
-            data.ctrl[0] = DRIVE_TORQUE
             mujoco.mj_step(model, data)
             viewer.sync()
             elapsed = time.perf_counter() - step_start
